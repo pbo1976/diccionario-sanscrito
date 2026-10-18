@@ -354,17 +354,22 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
   }
 
   // ---------- Lista con carga progresiva ----------
-  let list = [], shown = 0, listF = "", listMark = false, token = 0;
+  let list = [], shown = 0, listF = "", listMark = false, token = 0, busy = false;
   async function showMore(n = CHUNK) {
+    if (busy || shown >= list.length) return;            // una sola carga a la vez
+    busy = true;
     const my = token, part = list.slice(shown, shown + n);
-    await Promise.all([...new Set(part.map(x => x[0]))].map(loadLetter));
-    if (my !== token) return;
-    $("entries").insertAdjacentHTML("beforeend", part.map(([s, i]) => entryHTML(s, i, listF, listMark)).join(""));
-    shown += part.length;
-    $("more").hidden = shown >= list.length;
+    shown += part.length;                                 // se reserva el tramo antes de esperar
+    try {
+      await Promise.all([...new Set(part.map(x => x[0]))].map(loadLetter));
+      if (my !== token) return;
+      $("entries").insertAdjacentHTML("beforeend", part.map(([s, i]) => entryHTML(s, i, listF, listMark)).join(""));
+      $("more").hidden = shown >= list.length;
+    } finally { if (my === token) busy = false; }
   }
   async function setList(items, f, mark, upto = 0) {
-    token++; list = items; shown = 0; listF = f; listMark = mark;
+    token++; busy = false; list = items; shown = 0; listF = f; listMark = mark;
+    $("more").hidden = true;
     $("entries").innerHTML = ""; $("empty").hidden = items.length > 0;
     await showMore(Math.max(CHUNK, upto + 20));
   }
