@@ -134,6 +134,9 @@ figcaption { width: 100%; font-size: 13px; color: var(--ink-soft); font-style: i
 
 /* ---------- Páginas de texto ---------- */
 .prose { max-width: 68ch; }
+.form-wrap { max-width: 68ch; margin-top: 8px; }
+.form-wrap iframe { width: 100%; height: 980px; border: 1px solid var(--rule); border-radius: 8px; background: #fff; }
+.form-alt { font-size: 14px; color: var(--ink-soft); }
 .prose h2 { font-family: var(--body); font-size: 26px; margin: 0 0 12px; text-wrap: balance; }
 .prose h3 { font-size: 18px; margin: 26px 0 6px; }
 .prose p { margin: 0 0 12px; }
@@ -208,8 +211,12 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
       <p>El texto se ha recuperado de los archivos originales del autor, que usaban tipografías antiguas para los signos diacríticos. La transliteración y el devanāgarī se reconstruyen a partir de la línea Harvard-Kyoto de cada entrada. Las entradas siguen el orden en que el autor las dispuso dentro de cada letra.</p>
       <p>Están publicadas <span id="n-total"></span> entradas. La letra Bh no se ha encontrado entre los archivos conservados.</p>
       <p>Edición digital sin fines de lucro. Las definiciones pertenecen a las obras citadas en <a href="#fuentes" data-view="src">Fuentes</a>.</p>
-      <h3>Contacto</h3>
-      <p>Si tienes alguna consulta, un comentario o encuentras una errata, escribe a <a href="mailto:pbenadon@me.com?subject=Diccionario%20S%C3%A1nscrito%E2%80%93Espa%C3%B1ol">pbenadon@me.com</a>. Si se trata de una entrada concreta, indica el término.</p>
+      <h3 id="contacto">Contacto</h3>
+      <p>Si tienes alguna consulta, un comentario o encuentras una errata, puedes escribir con este formulario. Si se trata de una entrada concreta, indica el término.</p>
+    </div>
+    <div class="form-wrap">
+      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScw-cKxft4rxPyGALsKXn8wqjjMQXaVD7mtuGE1gDTkJZY_Wg/viewform?embedded=true" title="Formulario de contacto" loading="lazy">Cargando…</iframe>
+      <p class="form-alt">¿No se ve el formulario? <a href="https://docs.google.com/forms/d/e/1FAIpQLScw-cKxft4rxPyGALsKXn8wqjjMQXaVD7mtuGE1gDTkJZY_Wg/viewform" target="_blank" rel="noopener">Ábrelo en una página aparte</a>.</p>
     </div>
   </section>
 </main>
@@ -217,7 +224,6 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
 <footer class="wrap">
   <p>Diccionario Sánscrito–Español · Compilación de Ricardo Benadon, Buenos Aires, 2001–2014.</p>
   <p>Edición digital sin fines de lucro.</p>
-  <p>Consultas, comentarios o erratas: <a href="mailto:pbenadon@me.com?subject=Diccionario%20S%C3%A1nscrito%E2%80%93Espa%C3%B1ol">pbenadon@me.com</a></p>
 </footer>
 
 <script>
