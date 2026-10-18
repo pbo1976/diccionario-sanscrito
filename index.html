@@ -300,7 +300,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
   const rid = (slug, i) => "e-" + slug + "-" + i;
 
   // ---------- Referencias cruzadas ----------
-  const XREF = /(Ver:?|ver|Véase:?|→|cf\.)\s*([A-Za-zÀ-ÿĀ-žḀ-ỿ][A-Za-zÀ-ÿĀ-žḀ-ỿ-]+)/g;
+  const XREF = /((?<=\[)ver|(?<![A-Za-zÀ-ÿĀ-žḀ-ỿ])(?:Ver:?|Véase:?|→|cf\.))\s*([A-Za-zÀ-ÿĀ-žḀ-ỿ][A-Za-zÀ-ÿĀ-žḀ-ỿ-]+)/g;
   function linkify(html) {
     return html.replace(XREF, (m, lead, word) => {
       const hit = byWord.get(fold(word).replace(/[\s-]/g, ""));
