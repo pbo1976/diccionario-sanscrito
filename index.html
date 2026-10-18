@@ -116,9 +116,8 @@ article.e.flash { animation: flash 1.6s ease-out; }
 .dv { font-family: var(--display); font-size: 23px; line-height: 1.25; }
 .hk { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); width: 100%; }
 .perma { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); text-decoration: none; opacity: 0; }
-.perma:first-of-type { margin-left: auto; }
+.perma { margin-left: auto; }
 article.e:hover .perma, .perma:focus-visible { opacity: 1; }
-@media (hover: none) { .perma { opacity: .7; } }
 .defs { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 7px; }
 .defs li { display: block; }
 .defs p { margin: 0; color: var(--ink); overflow-wrap: anywhere; }
@@ -210,7 +209,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
       <p>Están publicadas <span id="n-total"></span> entradas. La letra Bh no se ha encontrado entre los archivos conservados.</p>
       <p>Edición digital sin fines de lucro. Las definiciones pertenecen a las obras citadas en <a href="#fuentes" data-view="src">Fuentes</a>.</p>
       <h3>Contacto</h3>
-      <p>Si tienes alguna consulta, un comentario o encuentras una errata, escribe a <a href="mailto:pbenadon@me.com?subject=Diccionario%20S%C3%A1nscrito%E2%80%93Espa%C3%B1ol">pbenadon@me.com</a>. En cada entrada hay también un enlace «avisar de un error» que prepara el correo con el término ya indicado.</p>
+      <p>Si tienes alguna consulta, un comentario o encuentras una errata, escribe a <a href="mailto:pbenadon@me.com?subject=Diccionario%20S%C3%A1nscrito%E2%80%93Espa%C3%B1ol">pbenadon@me.com</a>. Si se trata de una entrada concreta, indica el término.</p>
     </div>
   </section>
 </main>
@@ -332,8 +331,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
     const id = rid(slug, i);
     return `<article class="e" id="${id}">
       <div class="head"><span class="hw">${hilite(esc(r.w), f)}</span><span class="dv" lang="sa">${toDeva(r.hk)}</span>
-      <a class="perma" href="mailto:pbenadon@me.com?subject=${encodeURIComponent("Errata: " + r.w)}&amp;body=${encodeURIComponent("Entrada: " + r.w + " (" + r.hk + ")\n" + location.origin + location.pathname + "#" + id + "\n\nComentario:\n")}" title="Avisar de un error en esta entrada">avisar de un error</a>
-      <a class="perma" href="#${id}" aria-label="Enlace a ${esc(r.w)}" style="margin-left:10px">#</a>
+      <a class="perma" href="#${id}" aria-label="Enlace a ${esc(r.w)}">#</a>
       <span class="hk" title="Harvard-Kyoto"${showHK.checked ? "" : " hidden"}>${esc(r.hk)}</span></div>
       <ul class="defs">${defs}</ul>${imgs}</article>`;
   }
