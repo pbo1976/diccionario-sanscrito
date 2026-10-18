@@ -116,7 +116,8 @@ article.e.flash { animation: flash 1.6s ease-out; }
 .dv { font-family: var(--display); font-size: 23px; line-height: 1.25; }
 .hk { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); width: 100%; }
 .perma { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); text-decoration: none; opacity: 0; }
-.perma { margin-left: auto; }
+.perma[data-report] { margin-left: auto; }
+.perma + .perma { margin-left: 10px; }
 article.e:hover .perma, .perma:focus-visible { opacity: 1; }
 .defs { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 7px; }
 .defs li { display: block; }
@@ -137,6 +138,8 @@ figcaption { width: 100%; font-size: 13px; color: var(--ink-soft); font-style: i
 .form-wrap { max-width: 68ch; margin-top: 8px; }
 .form-wrap iframe { width: 100%; height: 980px; border: 1px solid var(--rule); border-radius: 8px; background: #fff; }
 .form-alt { font-size: 14px; color: var(--ink-soft); }
+.form-note { background: var(--accent-soft); border-radius: 6px; padding: 10px 12px; margin: 0 0 10px; }
+.form-note .back { font: 500 12px var(--mono); margin-left: 8px; padding: 4px 10px; border: 1px solid var(--rule); border-radius: 4px; background: var(--sheet); color: var(--ink); cursor: pointer; }
 .prose h2 { font-family: var(--body); font-size: 26px; margin: 0 0 12px; text-wrap: balance; }
 .prose h3 { font-size: 18px; margin: 26px 0 6px; }
 .prose p { margin: 0 0 12px; }
@@ -215,7 +218,8 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
       <p>Si tienes alguna consulta, un comentario o encuentras una errata, puedes escribir con este formulario. Si se trata de una entrada concreta, indica el término.</p>
     </div>
     <div class="form-wrap">
-      <iframe src="https://docs.google.com/forms/d/e/1FAIpQLScw-cKxft4rxPyGALsKXn8wqjjMQXaVD7mtuGE1gDTkJZY_Wg/viewform?embedded=true" title="Formulario de contacto" loading="lazy">Cargando…</iframe>
+      <p class="form-note" id="form-note" hidden>Vas a avisar de un error en <b id="form-term"></b>. <button type="button" class="back" id="form-back">Volver a la entrada</button></p>
+      <iframe id="form-frame" src="https://docs.google.com/forms/d/e/1FAIpQLScw-cKxft4rxPyGALsKXn8wqjjMQXaVD7mtuGE1gDTkJZY_Wg/viewform?embedded=true" title="Formulario de contacto" loading="lazy">Cargando…</iframe>
       <p class="form-alt">¿No se ve el formulario? <a href="https://docs.google.com/forms/d/e/1FAIpQLScw-cKxft4rxPyGALsKXn8wqjjMQXaVD7mtuGE1gDTkJZY_Wg/viewform" target="_blank" rel="noopener">Ábrelo en una página aparte</a>.</p>
     </div>
   </section>
@@ -337,6 +341,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
     const id = rid(slug, i);
     return `<article class="e" id="${id}">
       <div class="head"><span class="hw">${hilite(esc(r.w), f)}</span><span class="dv" lang="sa">${toDeva(r.hk)}</span>
+      <a class="perma" href="#contacto" data-report="${id}">avisar de un error</a>
       <a class="perma" href="#${id}" aria-label="Enlace a ${esc(r.w)}">#</a>
       <span class="hk" title="Harvard-Kyoto"${showHK.checked ? "" : " hidden"}>${esc(r.hk)}</span></div>
       <ul class="defs">${defs}</ul>${imgs}</article>`;
@@ -416,10 +421,24 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
     el.scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
     el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash");
   }
+  // ---------- Avisar de un error: abre el formulario con el término ya escrito ----------
+  const FORM = "https://docs.google.com/forms/d/e/1FAIpQLScw-cKxft4rxPyGALsKXn8wqjjMQXaVD7mtuGE1gDTkJZY_Wg/viewform";
+  let reportId = null;
+  function report(id) {
+    const m = /^e-([a-z]+)-(\d+)$/.exec(id), r = cache.get(m[1])[+m[2]];
+    const term = `${r.w} (${r.hk})`;
+    reportId = id;
+    $("form-frame").src = FORM + "?embedded=true&usp=pp_url&entry.1336932593=" + encodeURIComponent(term);
+    $("form-term").textContent = r.w; $("form-note").hidden = false;
+    show("about");
+    requestAnimationFrame(() => $("contacto").scrollIntoView({block: "start"}));
+  }
+  $("form-back").addEventListener("click", () => { if (reportId) go(reportId); });
   document.addEventListener("click", ev => {
-    const t = ev.target.closest("[data-go],[data-view],[data-l],[data-src]");
+    const t = ev.target.closest("[data-go],[data-view],[data-l],[data-src],[data-report]");
     if (!t) return;
-    if (t.dataset.go) { ev.preventDefault(); go(t.dataset.go); }
+    if (t.dataset.report) { ev.preventDefault(); report(t.dataset.report); }
+    else if (t.dataset.go) { ev.preventDefault(); go(t.dataset.go); }
     else if (t.dataset.view) { ev.preventDefault(); const v = t.dataset.view; show(v); if (v !== "dict") scrollTo(0, 0); }
     else if (t.dataset.l) { letter = keyToSlug[t.dataset.l]; q.value = ""; srcFilter = null; render(); scrollTo(0, 0); }
     else if (t.dataset.src) { srcFilter = t.dataset.src; q.value = ""; show("dict", false); render(); scrollTo(0, 0); }
