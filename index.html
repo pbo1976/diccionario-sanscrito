@@ -143,6 +143,8 @@ figcaption { width: 100%; font-size: 13px; color: var(--ink-soft); font-style: i
 .prose { max-width: 68ch; }
 .form-wrap { max-width: 68ch; margin-top: 8px; }
 .form-wrap iframe { width: 100%; height: 980px; border: 1px solid var(--rule); border-radius: 8px; background: #fff; }
+.dl { display: inline-block; font: 500 14px var(--mono); padding: 10px 16px; border: 1px solid var(--ink); border-radius: 6px; text-decoration: none; color: var(--ink); background: var(--sheet); }
+.dl:hover { background: var(--accent-soft); }
 .form-alt { font-size: 14px; color: var(--ink-soft); }
 .form-note { background: var(--accent-soft); border-radius: 6px; padding: 10px 12px; margin: 0 0 10px; }
 .form-note .back { font: 500 12px var(--mono); margin-left: 8px; padding: 4px 10px; border: 1px solid var(--rule); border-radius: 4px; background: var(--sheet); color: var(--ink); cursor: pointer; }
@@ -220,6 +222,9 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
       <p>El texto se ha recuperado de los archivos originales del autor, que usaban tipografías antiguas para los signos diacríticos. La transliteración y el devanāgarī se reconstruyen a partir de la línea Harvard-Kyoto de cada entrada. Las entradas siguen el orden en que el autor las dispuso dentro de cada letra.</p>
       <p>Están publicadas <span id="n-total"></span> entradas. La letra Bh no se ha encontrado entre los archivos conservados.</p>
       <p>Edición digital sin fines de lucro. Las definiciones pertenecen a las obras citadas en <a href="#fuentes" data-view="src">Fuentes</a>.</p>
+      <h3 id="descargar">Descargar el diccionario</h3>
+      <p>El diccionario completo está disponible gratuitamente como libro electrónico, con todas las entradas, las ilustraciones y las fuentes. Se abre en Apple Books, Kobo, Google Play Libros y otros lectores; en Kindle, con «Enviar a Kindle».</p>
+      <p><a class="dl" href="descargas/Diccionario-Sanscrito-Espanol.epub" download>Descargar ebook (EPUB, 18&nbsp;MB)</a></p>
       <h3 id="contacto">Contacto</h3>
       <p>Si tienes alguna consulta, un comentario o encuentras una errata, puedes escribir con este formulario. Si se trata de una entrada concreta, indica el término.</p>
     </div>
@@ -233,7 +238,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
 
 <footer class="wrap">
   <p>Diccionario Sánscrito–Español · Compilación de Ricardo Benadon, Buenos Aires, 2001–2014.</p>
-  <p>Edición digital sin fines de lucro.</p>
+  <p>Edición digital sin fines de lucro. <a href="descargas/Diccionario-Sanscrito-Espanol.epub" download>Descargar ebook (EPUB)</a></p>
 </footer>
 
 <script>
