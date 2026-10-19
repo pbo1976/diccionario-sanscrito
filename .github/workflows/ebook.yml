@@ -1,0 +1,67 @@
+name: Ebook
+
+# Cada cambio en el diccionario (datos o ilustraciones) regenera el EPUB
+# y lo publica como una versión nueva. Las versiones anteriores quedan en Releases.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/**"
+      - "img/**"
+      - "tools/ebook/**"
+      - ".github/workflows/ebook.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ebook
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar herramientas
+        run: |
+          pip install fonttools brotli
+          curl -sSL -o epubcheck.zip https://github.com/w3c/epubcheck/releases/download/v5.1.0/epubcheck-5.1.0.zip
+          unzip -q epubcheck.zip
+
+      - name: Generar EPUB
+        run: |
+          export DIC_SITE="$PWD" DIC_ASSETS="$PWD/tools/ebook" DIC_WORK="$RUNNER_TEMP/epub_build"
+          export DIC_VERSION="$(TZ=Europe/Berlin date +%d/%m/%Y)"
+          python3 tools/ebook/epub.py "$PWD/Diccionario-Sanscrito-Espanol.epub"
+
+      - name: Validar con EPUBCheck
+        run: java -jar epubcheck-5.1.0/epubcheck.jar Diccionario-Sanscrito-Espanol.epub
+
+      - name: Publicar versión
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="ebook-$(TZ=Europe/Berlin date +%Y-%m-%d-%H%M)"
+          PREV="$(git tag --list 'ebook-*' --sort=-creatordate | head -n1)"
+          {
+            echo "Versión del diccionario generada automáticamente el $(TZ=Europe/Berlin date '+%d/%m/%Y a las %H:%M')."
+            echo
+            echo "Cambios:"
+            if [ -n "$PREV" ]; then
+              git log --format='- %s' "$PREV"..HEAD -- data img tools/ebook | grep -v '^- Merge' || true
+            else
+              echo "- Primera versión publicada."
+            fi
+          } > notas.md
+          gh release create "$TAG" Diccionario-Sanscrito-Espanol.epub \
+            --title "Diccionario Sánscrito–Español · $(TZ=Europe/Berlin date +%d/%m/%Y)" \
+            --notes-file notas.md --latest
