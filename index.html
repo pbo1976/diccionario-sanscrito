@@ -260,10 +260,12 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
     }
     return out;
   }
-  function toDeva(hk) {
+  function toDeva(hk, w) {
     hk = hk.split(/[(/]/)[0].trim().replace(/-/g, "");
+    // una D inicial es ḍ si el lema empieza por ḍ
+    const keepD = w && /^[ḍḌ]/.test(w.trim());
     // las mayúsculas iniciales de nombres propios no son letras HK
-    hk = hk.replace(/(^|\s)([BCDEFGLPVY])/g, (m, a, b) => a + b.toLowerCase());
+    hk = hk.replace(/(^|\s)([BCDEFGLPVY])/g, (m, a, b, o) => (keepD && o === 0 && b === "D") ? m : a + b.toLowerCase());
     const toks = tokenize(hk); let out = "";
     for (let i = 0; i < toks.length; i++) {
       const t = toks[i];
@@ -352,7 +354,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
     const imgs = r.img ? `<figure class="ill">${r.img.map(s => `<img src="${s}" alt="Ilustración de ${esc(r.w)}" loading="lazy">`).join("")}${r.cap ? `<figcaption>${r.cap.map(esc).join(" · ")}</figcaption>` : ""}</figure>` : "";
     const id = rid(slug, i);
     return `<article class="e" id="${id}">
-      <div class="head"><span class="hw">${hilite(esc(r.w), f)}</span><span class="dv" lang="sa">${toDeva(r.hk)}</span>
+      <div class="head"><span class="hw">${hilite(esc(r.w), f)}</span><span class="dv" lang="sa">${r.root?"√ ":""}${toDeva(r.hk, r.w)}</span>
       <a class="perma" href="#contacto" data-report="${id}">avisar de un error</a>
       <a class="perma" href="#${id}" aria-label="Enlace a ${esc(r.w)}">#</a>
       <span class="hk" title="Harvard-Kyoto"${showHK.checked ? "" : " hidden"}>${esc(r.hk)}</span></div>
@@ -397,7 +399,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
       INDEX.forEach(([w, hk, s, i]) => {
         const k = fold(w + " " + hk);
         if (fold(w).startsWith(f) || fold(hk).startsWith(f)) starts.push([s, i]);
-        else if (k.includes(f) || toDeva(hk).includes(raw)) contains.push([s, i]);
+        else if (k.includes(f) || toDeva(hk, w).includes(raw)) contains.push([s, i]);
         else if (inDefs.checked && cache.get(s)[i].d.some(x => fold(x.t).includes(f))) indef.push([s, i]);
       });
       items = starts.concat(contains, indef);

@@ -23,9 +23,10 @@ def tokenize(s):
         if t: out.append(t); i+=len(t)
         else: out.append((s[i],)); i+=1
     return out
-def to_deva(hk):
+def to_deva(hk,w=""):
     hk=re.split(r"[(/]",hk)[0].strip().replace("-","")
-    hk=re.sub(r"(^|\s)([BCDEFGLPVY])",lambda m:m.group(1)+m.group(2).lower(),hk)
+    keepD=bool(re.match(r"[ḍḌ]",w.strip()))
+    hk=re.sub(r"(^|\s)([BCDEFGLPVY])",lambda m:m.group(0) if (keepD and m.start()==0 and m.group(2)=="D") else m.group(1)+m.group(2).lower(),hk)
     toks=tokenize(hk); out=""; i=0
     while i<len(toks):
         t=toks[i]
@@ -106,7 +107,8 @@ def page(title, body, cls=""):
 
 used_imgs=[]
 def entry(slug,i,r,here):
-    dev=r.get("deva") or to_deva(r["hk"])
+    dev=(r.get("deva") or to_deva(r["hk"],r["w"]))
+    if r.get("root"): dev="√ "+dev
     parts=[f'<div class="e" id="e{i}"><p class="hw"><b>{html.escape(r["w"])}</b> <span class="dv" lang="sa" xml:lang="sa">{dev}</span></p>']
     for d in r["d"]:
         ab,n,w,c=SRCD.get(d["s"],SRCD["otra"])
