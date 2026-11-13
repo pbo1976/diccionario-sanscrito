@@ -171,7 +171,7 @@ def build():
 <p>Cada entrada presenta el término en transliteración académica (IAST) y en devanāgarī. En palabras del autor: «Se agregaron ilustraciones cuando el término se refiere a un lugar, un ṛṣi, un comentarista, un Rey, o un héroe», y «fue de gran ayuda el Cologne Digital Sanskrit Lexicon (from Monier-Williams' Sanskrit-English Dictionary), tanto en la red como en el volumen impreso».</p>
 <p>Cada definición termina con la abreviatura de la obra de la que procede. La lista completa está en <a href="fuentes.xhtml">Fuentes y abreviaturas</a>.</p>
 <p><b>Esta edición.</b> El texto se ha recuperado de los archivos originales del autor, que usaban tipografías antiguas para los signos diacríticos. El devanāgarī se reconstruye a partir de la convención Harvard-Kyoto de cada entrada. Las entradas siguen el orden en que el autor las dispuso dentro de cada letra.</p>
-<p>Esta edición contiene {tot} entradas. La letra Bh no se ha encontrado entre los archivos conservados.{(" Versión del "+VERSION+".") if VERSION else ""}</p>
+<p>Esta edición contiene {tot} entradas.{(" Versión del "+VERSION+".") if VERSION else ""}</p>
 <p>Edición digital sin fines de lucro. Las definiciones pertenecen a las obras citadas. También disponible en línea, con buscador: pbo1976.github.io/diccionario-sanscrito</p>
 <p>Consultas, comentarios o erratas: en la web, sección «Sobre la obra», hay un formulario de contacto.</p>
 </div>'''))

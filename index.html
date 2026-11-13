@@ -220,7 +220,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
       <p>Cada entrada presenta el término en transliteración académica (IAST), en la convención Harvard-Kyoto y en devanāgarī. En palabras del autor: «Se agregaron ilustraciones cuando el término se refiere a un lugar, un ṛṣi, un comentarista, un Rey, o un héroe», y «fue de gran ayuda el Cologne Digital Sanskrit Lexicon (from Monier-Williams' Sanskrit-English Dictionary), tanto en la red como en el volumen impreso».</p>
       <h3>Esta edición</h3>
       <p>El texto se ha recuperado de los archivos originales del autor, que usaban tipografías antiguas para los signos diacríticos. La transliteración y el devanāgarī se reconstruyen a partir de la línea Harvard-Kyoto de cada entrada. Las entradas siguen el orden en que el autor las dispuso dentro de cada letra.</p>
-      <p>Están publicadas <span id="n-total"></span> entradas. La letra Bh no se ha encontrado entre los archivos conservados.</p>
+      <p>Están publicadas <span id="n-total"></span> entradas.</p>
       <p>Edición digital sin fines de lucro. Las definiciones pertenecen a las obras citadas en <a href="#fuentes" data-view="src">Fuentes</a>.</p>
       <h3 id="descargar">Descargar el diccionario</h3>
       <p>El diccionario completo está disponible gratuitamente como libro electrónico, con todas las entradas, las ilustraciones y las fuentes. Se abre en Apple Books, Kobo, Google Play Libros y otros lectores; en Kindle, con «Enviar a Kindle».</p>
@@ -312,7 +312,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
 
   const $ = id => document.getElementById(id);
   const q = $("q"), inDefs = $("indefs"), showHK = $("showhk");
-  const MISSING = ["bh"];
+  const MISSING = [];
   const CHUNK = 150;
   let META = null, INDEX = [], keyToSlug = {}, slugToKey = {};
   const cache = new Map();          // slug → registros
