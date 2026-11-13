@@ -100,6 +100,9 @@ nav.tabs a[aria-current="page"] { border-color: var(--rule); background: var(--s
 .abc button[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .abc button:disabled { color: var(--ink-soft); background: transparent; border-style: dashed; cursor: default; opacity: .65; }
 .abc button.missing { text-decoration: line-through; }
+.abc button { display: inline-flex; flex-direction: column; align-items: center; line-height: 1.15; }
+.abc .ld { font-size: .82em; color: var(--ink-soft); }
+.abc button[aria-pressed="true"] .ld { color: inherit; opacity: .8; }
 @media (max-width: 700px) {
   .abc { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
   .abc button { flex: none; }
@@ -472,10 +475,10 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
     META = meta; INDEX = meta.index;
     for (const [slug, L] of Object.entries(meta.letters)) { keyToSlug[L.key] = slug; slugToKey[slug] = L.key; }
     INDEX.forEach(([w, hk, s, i]) => { const k = fold(w).replace(/[\s-]/g, "").replace(/\d+$/, ""); if (!byWord.has(k)) byWord.set(k, [s, i]); });
-    abc.innerHTML = ABC.map(([l]) => {
+    abc.innerHTML = ABC.map(([l, dv]) => {
       const has = !!keyToSlug[l], miss = MISSING.includes(l);
       const title = has ? `Letra ${l}: ${meta.letters[keyToSlug[l]].n} entradas` : miss ? `Letra ${l}: archivo no encontrado` : `Letra ${l}: sin entradas`;
-      return `<button type="button" data-l="${l}" title="${title}" ${has ? "" : "disabled"} class="${miss ? "missing" : ""}" aria-pressed="false">${l}</button>`;
+      return `<button type="button" data-l="${l}" title="${title}" ${has ? "" : "disabled"} class="${miss ? "missing" : ""}" aria-pressed="false"><span class="lt">${l}</span><span class="ld" lang="sa">${dv}</span></button>`;
     }).join("");
     $("count").textContent = `${INDEX.length.toLocaleString("es")} entradas`;
     $("n-total").textContent = INDEX.length.toLocaleString("es");
