@@ -1,6 +1,6 @@
 # Diccionario Sánscrito–Español (Ricardo Benadon)
 
-Web: https://pbo1976.github.io/diccionario-sanscrito/ (GitHub Pages, rama `main`, raíz del repo).
+Web: https://diccionariosanscrito.com/ (dominio propio desde el 15/11/2026; GitHub Pages, rama `main`, raíz del repo; el archivo `CNAME` conecta el dominio, no borrarlo). La dirección antigua pbo1976.github.io/diccionario-sanscrito redirige sola.
 
 ## Dónde está cada cosa
 - `data/<letra>.json`: las entradas de cada letra. **Es la fuente de verdad del diccionario.** `data/index.json` es el índice de búsqueda y los recuentos por fuente.
@@ -20,5 +20,5 @@ La web enlaza siempre a `releases/latest/download/Diccionario-Sanscrito-Espanol.
 
 ## Criterios editoriales
 - No corregir el texto de Ricardo Benadon sin que Pato lo apruebe; las dudas se anotan como pendientes en `ERRATAS.md`.
-- No publicar emails personales en la web; el contacto es un formulario de Google Forms en «Sobre la obra».
+- No publicar emails personales en la web. Contacto público: info@diccionariosanscrito.com (consultas) y el formulario de Google Forms en «Sobre la obra» (erratas).
 - Edición sin fines de lucro; las definiciones pertenecen a las obras citadas.

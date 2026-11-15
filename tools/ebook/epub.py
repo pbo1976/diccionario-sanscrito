@@ -172,8 +172,8 @@ def build():
 <p>Cada definición termina con la abreviatura de la obra de la que procede. La lista completa está en <a href="fuentes.xhtml">Fuentes y abreviaturas</a>.</p>
 <p><b>Esta edición.</b> El texto se ha recuperado de los archivos originales del autor, que usaban tipografías antiguas para los signos diacríticos. El devanāgarī se reconstruye a partir de la convención Harvard-Kyoto de cada entrada. Las entradas siguen el orden en que el autor las dispuso dentro de cada letra.</p>
 <p>Esta edición contiene {tot} entradas.{(" Versión del "+VERSION+".") if VERSION else ""}</p>
-<p>Edición digital sin fines de lucro. Las definiciones pertenecen a las obras citadas. También disponible en línea, con buscador: pbo1976.github.io/diccionario-sanscrito</p>
-<p>Consultas, comentarios o erratas: en la web, sección «Sobre la obra», hay un formulario de contacto.</p>
+<p>Edición digital sin fines de lucro. Las definiciones pertenecen a las obras citadas. También disponible en línea, con buscador: diccionariosanscrito.com</p>
+<p>Consultas y comentarios: info@diccionariosanscrito.com. Para avisar de una errata, en la web, sección «Sobre la obra», hay un formulario.</p>
 </div>'''))
     rows="\n".join(f'<tr><td class="k s-{k}">[{ab}]</td><td>{html.escape(n)}<br/><i>{html.escape(w)}</i></td></tr>' for k,ab,n,w,c in SRC)
     open(O("fuentes.xhtml"),"w").write(page("Fuentes y abreviaturas",f'<h2>Fuentes y abreviaturas</h2><table class="src">{rows}</table>'))
