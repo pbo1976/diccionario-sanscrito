@@ -1,11 +1,20 @@
 // Diccionario Sánscrito–Español: funcionamiento sin conexión.
 // La página y los datos se piden primero a la red (para que las correcciones lleguen enseguida)
 // y, si no hay conexión, se sirven desde la copia guardada. Ilustraciones y tipografías: copia guardada primero.
-const V = "dic-v1";
+const V = "dic-v2";
 const SHELL = ["/", "/manifest.webmanifest", "/data/index.json", "/icons/icon-192.png", "/icons/apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
-  e.waitUntil(caches.open(V).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
+  // Se guarda todo el diccionario al instalar (~7 MB), para que funcione sin conexión desde el principio.
+  e.waitUntil((async () => {
+    const c = await caches.open(V);
+    await c.addAll(SHELL);
+    try {
+      const idx = await (await fetch("/data/index.json", {cache: "no-cache"})).json();
+      await c.addAll(Object.keys(idx.letters || {}).map(s => "/data/" + s + ".json"));
+    } catch (_) {}
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener("activate", e => {

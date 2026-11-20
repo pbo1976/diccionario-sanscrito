@@ -226,6 +226,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
     <div class="entries" id="entries"></div>
     <button type="button" class="more" id="more" hidden>Mostrar más entradas</button>
     <p class="empty" id="empty" hidden>Ninguna entrada coincide con la búsqueda.</p>
+    <p class="empty" id="offline-msg" hidden><b>Sin conexión.</b> Esta parte del diccionario todavía no está guardada en el teléfono. Se mostrará en cuanto vuelva la conexión.</p>
   </section>
 
   <section id="v-src" hidden>
@@ -350,10 +351,18 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
 
   function loadLetter(slug) {
     if (cache.has(slug)) return Promise.resolve(cache.get(slug));
-    if (!pending.has(slug)) pending.set(slug, fetch("data/" + slug + ".json").then(r => r.json()).then(d => { cache.set(slug, d); return d; }));
+    if (!pending.has(slug)) pending.set(slug, fetch("data/" + slug + ".json").then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(d => { cache.set(slug, d); return d; })
+      .catch(err => { pending.delete(slug); throw err; }));   // si falla (sin conexión), se puede reintentar luego
     return pending.get(slug);
   }
   const loadAll = () => Promise.all(Object.keys(META.letters).map(loadLetter));
+  async function loadAllOrWarn() {          // false si falta alguna letra (sin conexión)
+    $("loading").hidden = false; $("loading").textContent = "Cargando todas las definiciones…";
+    try { await loadAll(); return true; }
+    catch (err) { $("entries").innerHTML = ""; $("more").hidden = true; $("empty").hidden = true; $("offline-msg").hidden = false; return false; }
+    finally { $("loading").hidden = true; }
+  }
   const rid = (slug, i) => "e-" + slug + "-" + i;
 
   // ---------- Referencias cruzadas ----------
@@ -398,8 +407,15 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
     const my = token, part = list.slice(shown, shown + n);
     shown += part.length;                                 // se reserva el tramo antes de esperar
     try {
-      await Promise.all([...new Set(part.map(x => x[0]))].map(loadLetter));
+      try { await Promise.all([...new Set(part.map(x => x[0]))].map(loadLetter)); }
+      catch (err) {
+        if (my !== token) return;
+        shown -= part.length;                             // se puede volver a intentar
+        $("offline-msg").hidden = false; $("more").hidden = true;
+        return;
+      }
       if (my !== token) return;
+      $("offline-msg").hidden = true;
       $("entries").insertAdjacentHTML("beforeend", part.map(([s, i]) => entryHTML(s, i, listF, listMark)).join(""));
       $("more").hidden = shown >= list.length;
     } finally { if (my === token) busy = false; }
@@ -407,10 +423,11 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
   async function setList(items, f, mark, upto = 0) {
     token++; busy = false; list = items; shown = 0; listF = f; listMark = mark;
     $("more").hidden = true;
-    $("entries").innerHTML = ""; $("empty").hidden = items.length > 0;
+    $("entries").innerHTML = ""; $("empty").hidden = items.length > 0; $("offline-msg").hidden = true;
     await showMore(Math.max(CHUNK, upto + 20));
   }
   $("more").addEventListener("click", () => showMore());
+  addEventListener("online", () => { if (!$("offline-msg").hidden) { $("offline-msg").hidden = true; render(); } });
   const io = "IntersectionObserver" in window ? new IntersectionObserver(es => { if (es[0].isIntersecting && !$("more").hidden) showMore(); }, {rootMargin: "800px"}) : null;
   if (io) io.observe($("more"));
 
@@ -422,7 +439,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
     $("loading").hidden = true;
     let items;
     if (f) {
-      if (inDefs.checked || srcFilter) { $("loading").hidden = false; $("loading").textContent = "Cargando todas las definiciones…"; await loadAll(); $("loading").hidden = true; }
+      if ((inDefs.checked || srcFilter) && !(await loadAllOrWarn())) return;
       if (fold(q.value.trim()) !== f) return;
       const starts = [], contains = [], indef = [];
       INDEX.forEach(([w, hk, s, i]) => {
@@ -434,7 +451,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
       items = starts.concat(contains, indef);
       setHead("«" + raw + "»", "", `${items.length} resultados`);
     } else if (srcFilter) {
-      $("loading").hidden = false; $("loading").textContent = "Cargando todas las definiciones…"; await loadAll(); $("loading").hidden = true;
+      if (!(await loadAllOrWarn())) return;
       items = INDEX.filter(([w, hk, s, i]) => cache.get(s)[i].d.some(x => x.s === srcFilter)).map(([w, hk, s, i]) => [s, i]);
       setHead(SRC[srcFilter].name, "", `${items.length} entradas`);
     } else {
