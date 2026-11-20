@@ -154,6 +154,8 @@ figcaption { width: 100%; font-size: 13px; color: var(--ink-soft); font-style: i
 /* ---------- Páginas de texto ---------- */
 .prose { max-width: 68ch; }
 .form-wrap { max-width: 68ch; margin-top: 8px; }
+.form-offline { border: 1px solid var(--rule); border-radius: 8px; background: var(--sheet, var(--paper)); padding: 16px 18px; }
+
 .form-wrap iframe { width: 100%; height: 1110px; border: 1px solid var(--rule); border-radius: 8px; background: #fff; }
 @media (max-width: 600px) { .form-wrap iframe { height: 1250px; } }
 @media (max-width: 440px) { .form-wrap iframe { height: 1420px; } }
@@ -257,6 +259,7 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
     </div>
     <div class="form-wrap">
       <p class="form-note" id="form-note" hidden>Vas a avisar de un error en <b id="form-term"></b>. <button type="button" class="back" id="form-back">Volver a la entrada</button></p>
+      <p class="form-offline" id="form-offline" hidden><b>Sin conexión.</b> El formulario necesita internet. Vuelve a intentarlo cuando estés conectado, o escribe a <a href="mailto:info&#64;diccionariosanscrito.com">info&#64;diccionariosanscrito.com</a>.</p>
       <iframe id="form-frame" src="https://docs.google.com/forms/d/e/1FAIpQLScw-cKxft4rxPyGALsKXn8wqjjMQXaVD7mtuGE1gDTkJZY_Wg/viewform?embedded=true" title="Formulario de contacto" loading="lazy">Cargando…</iframe>
       <p class="form-alt">¿No se ve el formulario? <a href="https://docs.google.com/forms/d/e/1FAIpQLScw-cKxft4rxPyGALsKXn8wqjjMQXaVD7mtuGE1gDTkJZY_Wg/viewform" target="_blank" rel="noopener">Ábrelo en una página aparte</a>.</p>
     </div>
@@ -519,6 +522,21 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
 })();
 </script>
 
+<script>
+// Sin conexión: en lugar del formulario (que es de Google y necesita internet) se muestra un aviso.
+(() => {
+  const fr = document.getElementById("form-frame"), note = document.getElementById("form-offline");
+  const alt = fr.parentElement.querySelector(".form-alt");
+  let wasOff = false;
+  const upd = () => {
+    const off = !navigator.onLine;
+    fr.hidden = off; note.hidden = !off; if (alt) alt.hidden = off;
+    if (!off && wasOff) fr.src = fr.src;   // al volver la conexión, cargar el formulario de nuevo
+    wasOff = off;
+  };
+  addEventListener("online", upd); addEventListener("offline", upd); upd();
+})();
+</script>
 <div class="install" id="install" hidden role="dialog" aria-label="Instalar la app">
   <button class="x" type="button" id="install-x" aria-label="Cerrar">×</button>
   <span id="install-txt"></span>
