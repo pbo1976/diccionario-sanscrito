@@ -1,0 +1,16 @@
+{
+  "name": "Diccionario Sánscrito–Español",
+  "short_name": "Sánscrito",
+  "description": "Diccionario Sánscrito–Español de Ricardo Benadon (Buenos Aires, 2001–2014). Edición digital gratuita.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f7f6f2",
+  "theme_color": "#f7f6f2",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

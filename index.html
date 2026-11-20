@@ -4,6 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Diccionario Sánscrito–Español de Ricardo Benadon (Buenos Aires, 2001–2014): más de 17.000 términos sánscritos con su transliteración, devanāgarī y definiciones de trece fuentes. Edición digital gratuita con buscador.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Sánscrito">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#f7f6f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#14151b" media="(prefers-color-scheme: dark)">
 <link rel="canonical" href="https://diccionariosanscrito.com/">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Diccionario Sánscrito–Español · Ricardo Benadon">
@@ -167,6 +176,13 @@ figcaption { width: 100%; font-size: 13px; color: var(--ink-soft); font-style: i
 
 footer { border-top: 1px solid var(--rule); padding-block: 18px 32px; color: var(--ink-soft); font-size: 14px; }
 footer p { margin: 0 0 6px; max-width: 80ch; }
+
+.install { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 50; max-width: 520px; margin: 0 auto;
+  background: var(--sheet, var(--paper)); color: var(--ink); border: 1px solid var(--rule); border-radius: 10px; padding: 12px 40px 12px 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.12); font-size: 15px; line-height: 1.4; }
+.install b { font-weight: 700; }
+.install .x { position: absolute; top: 6px; right: 6px; border: 0; background: none; color: var(--ink-soft); font-size: 22px; line-height: 1; padding: 6px 8px; cursor: pointer; }
+.install .go { margin-top: 8px; font: inherit; border: 1px solid var(--ink); background: var(--ink); color: var(--paper); border-radius: 6px; padding: 4px 12px; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -232,6 +248,9 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
       <p>El diccionario completo está disponible gratuitamente como libro electrónico, con todas las entradas, las ilustraciones y las fuentes. Se abre en Apple Books, Kobo, Google Play Libros y otros lectores; en Kindle, con «Enviar a Kindle».</p>
       <p><a class="dl" href="https://github.com/pbo1976/diccionario-sanscrito/releases/latest/download/Diccionario-Sanscrito-Espanol.epub">Descargar ebook (EPUB, 18&nbsp;MB)</a></p>
       <p class="form-alt">El ebook se actualiza con cada corrección del diccionario. Las versiones anteriores siguen disponibles en <a href="https://github.com/pbo1976/diccionario-sanscrito/releases" target="_blank" rel="noopener">el historial de versiones</a>.</p>
+      <h3 id="app">Instalar en el teléfono</h3>
+      <p>El diccionario se puede instalar como una app, con su propio icono, y funciona también sin conexión.</p>
+      <p><b>iPhone y iPad:</b> abre la web en Safari, toca el botón Compartir y elige «Añadir a pantalla de inicio».<br><b>Android:</b> en Chrome, abre el menú ⋮ y elige «Instalar aplicación» o «Añadir a pantalla de inicio».</p>
       <h3 id="contacto">Contacto</h3>
       <p>Para consultas o comentarios, escribe a <a href="mailto:info&#64;diccionariosanscrito.com">info&#64;diccionariosanscrito.com</a>.</p>
       <p>Si encuentras una errata, puedes avisar con este formulario. Si se trata de una entrada concreta, indica el término.</p>
@@ -497,6 +516,34 @@ footer p { margin: 0 0 6px; max-width: 80ch; }
     else { show("dict"); render(); }
     addEventListener("hashchange", () => { const h = location.hash.slice(1); if (/^e-/.test(h) && !document.getElementById(h)) go(h); });
   }).catch(() => { $("loading").hidden = false; $("loading").textContent = "No se pudo cargar el diccionario. Recarga la página."; });
+})();
+</script>
+
+<div class="install" id="install" hidden role="dialog" aria-label="Instalar la app">
+  <button class="x" type="button" id="install-x" aria-label="Cerrar">×</button>
+  <span id="install-txt"></span>
+</div>
+<script>
+// App instalable: funcionamiento sin conexión y aviso para instalar (una sola vez, solo en móvil).
+if ("serviceWorker" in navigator) addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+(() => {
+  const box = document.getElementById("install"), txt = document.getElementById("install-txt");
+  const standalone = matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  let seen = false; try { seen = localStorage.getItem("installHint") === "1"; } catch (_) {}
+  const close = () => { box.hidden = true; try { localStorage.setItem("installHint", "1"); } catch (_) {} };
+  document.getElementById("install-x").onclick = close;
+  if (standalone || seen) return;
+  const ua = navigator.userAgent, ios = /iPhone|iPad|iPod/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  if (ios && /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua)) {
+    txt.innerHTML = "<b>Instala el diccionario en tu iPhone</b>: toca Compartir y luego «Añadir a pantalla de inicio». Funciona también sin conexión.";
+    setTimeout(() => { box.hidden = false; }, 4000);
+  }
+  addEventListener("beforeinstallprompt", ev => {
+    ev.preventDefault();
+    txt.innerHTML = "<b>Instala el diccionario en tu teléfono</b>. Funciona también sin conexión.<br><button class=\"go\" type=\"button\">Instalar</button>";
+    txt.querySelector(".go").onclick = () => { ev.prompt(); close(); };
+    box.hidden = false;
+  });
 })();
 </script>
 

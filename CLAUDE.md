@@ -5,7 +5,8 @@ Web: https://diccionariosanscrito.com/ (dominio propio desde el 15/11/2026; GitH
 ## Dónde está cada cosa
 - `data/<letra>.json`: las entradas de cada letra. **Es la fuente de verdad del diccionario.** `data/index.json` es el índice de búsqueda y los recuentos por fuente.
 - `img/`: ilustraciones de las entradas.
-- `index.html`: la web, generada a partir de una plantilla; no se editan datos aquí.
+- `index.html`: la web (se edita directamente; no se ponen datos del diccionario aquí).
+- App instalable (PWA): `manifest.webmanifest`, `sw.js` (funcionamiento sin conexión; pide primero a la red, así que las correcciones llegan solas) e `icons/`. Si se cambia la lógica de `sw.js`, subir la versión `V`.
 - `tools/ebook/`: generador del EPUB (`epub.py`), tipografías y cubierta.
 - `ERRATAS.md`: registro de correcciones hechas y pendientes.
 
